@@ -8,14 +8,37 @@ services:
       - "8080:80"  # Map host port 8080 to container port 80
     volumes:
       - .:/app  # Mount the current directory into the container at /app
-    command: sleep infinity  # Keep the application container running
-
+    # command: sleep infinity  # Keep the application container running
+    depends_on:
+      - mqtt_broker
+      - hwapp
+  hwapp:
+    build:
+      context: .
+      dockerfile: Dockerfile-hwapp # Dockerfile for your application
+    volumes:
+      - .:/app  # Mount the current directory into the container at /app
+    depends_on:
+      - mqtt_broker
+  
   tests:
     build:
       context: .
       dockerfile: Dockerfile-tests  # Dockerfile for running tests
     volumes:
       - .:/app  # Mount the current directory into the container at /app
-    depends_on:
-      - app  # Ensure the application container is started first
+    # depends_on:
+    #   - app  # Ensure the application container is started first
     command: pytest  # Run pytest to execute the tests
+
+  mqtt_broker:
+    image: eclipse-mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+
+   
+    
