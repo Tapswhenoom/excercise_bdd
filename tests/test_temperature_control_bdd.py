@@ -70,7 +70,7 @@ def reashe_desired_temperature(temperature_unit):
     temperature_unit.target_temp=70
     logging.info(f'target temperature is {temperature_unit.target_temp}')
     temperature_unit.reach_desired_temperature()
-    logging.info(f'target temperature is reashed {temperature_unit.target_temp}')
+    logging.info(f'target temperature is reached {temperature_unit.target_temp}')
     logging.info(f'machine should switch to Ready')
 
 
