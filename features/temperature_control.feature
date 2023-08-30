@@ -47,25 +47,7 @@ Feature: Temperature Control Unit Behavior
     When user turn off the machine
     Then the machine is switeched to OFF 
 
-  Scenario Outline: Transition from OFF to IDLE to HEATING to READY to IDLE to HEATING to ERROR to IDLE to OFF
-    Given the temperature control unit is initially OFF
-    When user turns ON the machine
-    And the user selects a coffee <option1>
-    And once target temperature is reashed
-    And operation finished
-    And the user selects a coffee <option2>
-    And target temperature is not reached 
-    And timeout reached
-    And user dismiss the error 
-    And user turn off the machine
-    Then the machine is switeched to OFF 
-        
-    Examples:
-
-       | option1        | option2|
-       | Espresso      | Cappuccino|
-     
- 
+    
  Scenario Outline: Transition to OFF
     Given machine in <state> 
     When user turn off the machine
@@ -79,3 +61,68 @@ Feature: Temperature Control Unit Behavior
        | READY   | 
        | ERROR   | 
        | OFF     |
+
+# -----------------------------------------------path testing-----------------------------
+ Scenario Outline: Normal Operation-Successful Heating
+    # Given the temperature control unit is initially OFF
+    When user turns ON the machine
+    And the user selects a coffee <option>
+    And once target temperature is reashed
+    And operation finished
+    Then the machine is switeched to IDLE
+  
+  Examples:
+
+       | option  |
+       | Espresso | 
+
+  Scenario Outline: Timeout During Heating
+    # Given the temperature control unit is initially OFF
+    When user turns ON the machine
+    And the user selects a coffee <option>
+    And target temperature is not reached 
+    And timeout reached
+    And user dismiss the error
+    Then the machine is switeched to IDLE
+  
+  
+  Examples:
+
+       | option  |
+       | Espresso | 
+
+  Scenario Outline: Immediate Turn Off
+    # Given the temperature control unit is initially OFF
+    When user turns ON the machine
+    And the user selects a coffee <option>
+    And user turn off the machine
+    Then the machine is switeched to OFF
+    
+    Examples:
+
+       | option  |
+       | Espresso | 
+
+  Scenario Outline: Transition from Error After Handling
+    Given the temperature control unit is initially OFF
+    When user turns ON the machine
+    And the user selects a coffee <option1>
+    And once target temperature is reashed
+    And operation finished
+    And the user selects a coffee <option2>
+    And target temperature is not reached 
+    And timeout reached
+    And user dismiss the error 
+    Then the machine is switeched to IDLE 
+        
+    Examples:
+
+       | option1  | option2|
+       | Espresso | Cappuccino|
+     
+
+@negative
+Scenario: Choosing an Invalid Option
+    Given machine in IDLE
+    When user choose an invalid option "xxxxx"
+    Then the machine should not make the caffee 

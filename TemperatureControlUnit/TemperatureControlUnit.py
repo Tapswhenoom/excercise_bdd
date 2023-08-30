@@ -82,19 +82,20 @@ class TemperatureControlUnit:
             if option in self.coffee_options:
                 print(f"Selected {option}. Coffee maker is now heating.")
                 self.set_state(State.HEATING)
-                self.start_heating(temp=40)
+                self.start_heating()
+            
             
         
-    def start_heating(self,temp):
+    def start_heating(self):
         if self.state == State.HEATING:
             # Simulate the heating process
             # In a real embedded system, this might involve interacting with hardware
-            self.turn_on_heater(temp)
+            self.turn_on_heater()
             
             # self.set_state(State.HEATING)
 
-    def turn_on_heater(self,temp):
-        self.set_target_temp(temp)
+    def turn_on_heater(self):
+        self.set_target_temp()
         self.client.publish(self.topic_heater_state, 'ON', qos=1)
 
     def turn_off_heater(self):
@@ -141,8 +142,8 @@ class TemperatureControlUnit:
             print('user dismmis the error')
             self.set_state(State.IDLE)
 
-    def set_target_temp(self,target_temp):
-        self.target_temp=target_temp
+    def set_target_temp(self):
+        # self.target_temp=target_temp
         print(f'target temp set to {self.target_temp}')
         self.publish_temperature()
     
