@@ -1,9 +1,6 @@
 import pytest , time ,threading
-from unittest.mock import Mock, patch
-import paho.mqtt.client as mqtt
+from unittest.mock import  patch
 from  TemperatureControlUnit.TemperatureControlUnit import State
-
-
 
 class TestTemperatureTimeout:
     
