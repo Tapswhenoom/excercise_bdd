@@ -15,7 +15,7 @@ class TemperatureControlUnit:
     def __init__(self):
         self.state = State.OFF
         self.coffee_brewing_timeout=60
-        self.target_temp = 25
+        self.target_temp = 70
         self.current_temp=0
         self.time_after_ready=10
         self.broker_address = "mqtt_broker" #host name of MQTT broker 

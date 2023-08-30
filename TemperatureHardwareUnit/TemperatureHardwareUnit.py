@@ -4,7 +4,7 @@ import paho.mqtt.client as mqtt
 
 
 class TemperatureHardwareUnit:
-    def __init__(self) -> None: 
+    def __init__(self): 
         self.target_temp= 25 
         self.room_temp=25 #set Room Temp
         self.current_temp= self.target_temp
@@ -37,7 +37,7 @@ class TemperatureHardwareUnit:
             elif  self.current_temp > target_temp: 
                 self.current_temp -=1  # Simulate  decrease of temperature
             self.publish_temperature()
-            time.sleep(2)  # Publish every 2 seconds
+            time.sleep(1)  # Publish every 2 seconds
 
     
 
