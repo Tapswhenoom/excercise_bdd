@@ -1,17 +1,10 @@
 
 from  TemperatureControlUnit.TemperatureControlUnit import State
 import pytest, logging, time 
-from pathlib import Path
 from unittest.mock import Mock,patch
 from pytest_bdd import given, when, then, scenario ,parsers
 
 
-
-# Fixture to create a new instance of TemperatureControlUnit for each scenario
-# @pytest.fixture
-# def temperature_unit():
-#     temp=TemperatureControlUnit()
-#     return temp
 
 # Define steps for the scenario
 @given("the temperature control unit is initially OFF")
@@ -100,13 +93,10 @@ def initial_state(temperature_unit):
     
 @when("operation finished")
 def operation_finished(temperature_unit):
-    # time.sleep(10)
     temperature_unit.client.publish=Mock()
     logging.info(f'Start calculate the wait of 10s')
     time_before = time.time()
     temperature_unit.finish_operation()
-    # assert temperature_unit.get_state()==State.READY
-    # finish_operation(machine)
     time_after = time.time()
     time_taken = time_after - time_before
     assert time_taken >= 10

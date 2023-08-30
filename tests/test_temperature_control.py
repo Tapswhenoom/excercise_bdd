@@ -49,4 +49,4 @@ class TestTemperatureTimeout:
         time_thread.join()
         assert temperature_unit.get_state()== State.ERROR
 
-# class TestTimeAfterReady:
+
