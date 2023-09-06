@@ -14,7 +14,7 @@ You are working on an embedded system that controls a temperature control unit f
 
 1. Set up a new Python project for this exercise. You can use Pytest for writing BDD-style tests. We have provided you with a dummy framework implementation.
 
-2. Create a Python module for the temperature control unit with functions to control its state (e.g., `set_temperature_state(state)`). We have provided you with a dummy product implementation. Make sure you understand the project and familiarize yourself with basic python package creation, docker, pytest and bdd.
+2. Create a Python module for the temperature control unit with functions to control its state (e.g., `set_temperature_state(state)`). We have provided you with a dummy product implementation - or keep the mocked implemation as is if you can't. Make sure you understand the project and familiarize yourself with basic python package creation, docker, pytest and bdd.
 
 3. Write a state diagram for the coffee maker and describe the boundary conditions for the transitions.
 
@@ -24,4 +24,4 @@ You are working on an embedded system that controls a temperature control unit f
 
 6. Now that we wrote some tests - great! Verify they pass
 
-7. 
+7. What do you think about the scenario? The spec has a flaw in it, can you make a suggestion?
