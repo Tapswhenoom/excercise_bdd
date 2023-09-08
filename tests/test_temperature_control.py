@@ -17,21 +17,21 @@ def test_initial_state_off():
 @given("the temperature control unit is initially OFF")
 def initial_state(temperature_unit):
     assert temperature_unit.get_state() == "OFF"
-
-# Define a pytest-bdd scenario
+    
 @scenario("temperature_control.feature", "Transition to HEATING")
 def test_transition_to_heating():
     pass
 
-# Define steps for the scenario
 @given("the temperature control unit is initially OFF")
 def initial_state(temperature_unit):
     assert temperature_unit.get_state() == "OFF"
 
-@when("the user selects a coffee brewing option")
-def select_brew_option(temperature_unit):
-    temperature_unit.select_coffee_brewing_option()
+@when("the user starts the coffee machine")
+def turn_machine_on(temperature_unit):
+    temperature_unit.turn_on_machine()
 
-@then("the temperature control unit should transition to HEATING")
-def transition_to_heating(temperature_unit):
-    assert temperature_unit.get_state() == "HEATING"
+@when("the user selects a valid coffee brewing option")
+def valid_coffee_choice(monkeypatch,temperature_unit):
+    monkeypatch.setattr('builtins.input', lambda _: "9")
+    temperature_unit.select_coffee_brewing_option()
+    
