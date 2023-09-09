@@ -1,6 +1,5 @@
 import pytest
-from temperature_control_unit import TemperatureControlUnit
-from pytest_bdd import given, when, then
+from temperature_control_unit.TemperatureControlUnit import TemperatureControlUnit
 
 # Define a fixture to create an instance of TemperatureControlUnit
 @pytest.fixture(scope="session")
