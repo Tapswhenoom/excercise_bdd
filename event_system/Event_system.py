@@ -8,6 +8,7 @@ class EventSystem:
     def unsubscribe(self, subscriber):
         self.subscribers.remove(subscriber)
 
-    def publish_event(self, event, publisher = None):
+    def publish_event(self, event, publisher=None):
         for subscriber in self.subscribers:
-            subscriber.event_handler(event, publisher)
+            if subscriber != publisher:
+                subscriber.event_handler(event)

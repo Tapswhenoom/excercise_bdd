@@ -5,16 +5,35 @@ Feature: Temperature Control Unit Behavior
 
   Scenario: Transition to HEATING 
     Given the temperature control unit is initially OFF
-    When the user starts the coffee machine
-    And  the user selects a valid coffee brewing option
+    When the temperature control unit receives an event with a temperature request
     Then the temperature control unit should transition to HEATING
 
   Scenario: Transition to READY
-    Given the temperature control unit is HEATING
+    Given the temperature control unit is initially HEATING
     When the temperature reaches the desired temperature
     Then the temperature control unit should transition to READY
 
   Scenario: Transition to OFF
-    Given any temperature control unit state other than OFF
-    When the coffee machine is turned off
+    Given the temperature control unit is READY
+    When the temperature control unit receives an event to turn OFF
     Then the temperature control unit should transition to OFF
+  
+  Scenario: Transition to OFF waiting for request
+    Given the temperature control unit is READY
+    When the temperature control unit receives an event to wait
+    Then the temperature control unit should transition to OFF
+
+  Scenario: Test water heating and sensor logic
+    Given the temperature control unit receives an event with a temperature request
+    When the brewing process is called
+    Then water will reach the needed temp
+    And the temperature control unit should transition to READY
+
+  Scenario: Complete loop from the tcu
+    Given the temperature control unit is initially OFF
+    When the temperature control unit receives an event with a temperature request
+    And the temperature reaches the desired temperature
+    And the temperature control unit receives an event to turn OFF
+    Then the temperature control unit should transition to OFF
+
+

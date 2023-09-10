@@ -1,20 +1,28 @@
+if __name__ == "__main__":
+    import sys
+    import os
+    # Add the parent directory of the current script to the Python path
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    sys.path.append(parent_dir)
+
+from states_enum.States import States_SCU, States_TCU
 import time
 import threading
 
-from States import States_SCU, States_TCU
 
 class TemperatureControlUnit:
-    def __init__(self, event_system = None):
+    def __init__(self, event_system=None):
         # Start coffee machine with heater off
         self.state = States_TCU.OFF
         self.event_system = event_system
-        if event_system != None:
+        if event_system is not None:
             self.event_system.subscribe(self)
             
         # Water properties
         self.temp_ambient = 23
-        self.temp         = self.temp_ambient
-        self.temp_desired = 80
+        self.temp = self.temp_ambient
+        self.temp_desired = 40
         self.temp_lock = threading.Lock()
         
         # Heater properties
@@ -36,36 +44,42 @@ class TemperatureControlUnit:
         if self.event_system is not None:
             self.event_system.publish_event(event, self)
     
-    def event_handler(self, event, publisher):
-        if publisher is not None and publisher == self:
-            return
+    def event_handler(self, event):
+
         if event == States_SCU.OFF:
             self.set_state(States_TCU.OFF)
+
         elif isinstance(event, list):
-            self.temp_desired = event[1]
-            self.start_brewing()
+            if event[0] == States_SCU.VALID_REQUEST:
+                self.temp_desired = event[1]
+                self.set_state(States_TCU.HEATING)
+                self.start_brewing()
+                
         elif event == States_SCU.WAITING:
-            self.set_state(States_TCU.OFF)         
+            self.set_state(States_TCU.OFF)   
+              
     
     def start_brewing(self):
         """Starts heating procedure setup
-            State Transition (TCU): OFF -> (HEATING) -> READY
-        """        
+            sets and publishes States_TCU.READY flag
+        """
+        if self.get_state() == States_TCU.HEATING:
+            # Start Double Thread
+            heating_thread = threading.Thread(target=self.start_heating)
+            sensor_thread = threading.Thread(target=self.reach_desired_temperature)
+            
+            sensor_thread.start()
+            heating_thread.start()
+            
+            sensor_thread.join()
+            heating_thread.join()
+            
+            self.set_and_pub_self_signed_event(States_TCU.READY)
+        else:
+            print("ERROR: to start brewing tcu needs to be in HEATING STATE")
+            
         
-        self.set_state(States_TCU.HEATING)
-        #Start Double Thread
-        heating_thread = threading.Thread(target=self.start_heating)
-        sensor_thread = threading.Thread(target=self.reach_desired_temperature)
-        
-        sensor_thread.start()
-        heating_thread.start()
-        
-        sensor_thread.join()
-        heating_thread.join()
-        
-        # just publishing the state, the state at this point is already READY
-        self.set_and_pub_self_signed_event(States_TCU.READY)
-
+                
     def start_heating(self):
         # Simulate the heating process (Turned on the heater, waiting for signal from sensor to turn off)
         time.sleep(self.heater_loop_time)
@@ -89,7 +103,7 @@ def temp_decay(tcu: TemperatureControlUnit):
     """
     Simulates the temperature decay of water when tcu is in state OFF
     """
-    water_temp_after_decay = 0.9 # 90%
+    water_temp_after_decay = 0.9  # 90%
 
     while True:
         if tcu.get_state() == States_TCU.OFF:
@@ -104,7 +118,7 @@ if __name__ == "__main__":
     tcu = TemperatureControlUnit()
     tcu.state = "HEATING"
     start = time.time()
-    tcu.start_brewing()
+    tcu.event_handler([States_SCU.VALID_REQUEST, 90])
   
     print(f"Took {time.time() - start:0.2f} s to heat\
  water from {tcu.temp_ambient} to {tcu.temp} at\
