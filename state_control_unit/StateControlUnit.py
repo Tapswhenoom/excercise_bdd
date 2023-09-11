@@ -69,7 +69,7 @@ class StateControlUnit():  # CoffeeMachine
             State Transition (TCU): OFF -> HEATING
         """
         if self.get_state() == States_SCU.WAITING:
-            print(f"\nSelect Coffee, press {self.escape_menu_key} to quit, and a to abort : \n")
+            print(f"\nSelect Coffee, press {self.escape_menu_key} to quit: \n")
             
             for key in self.available_coffees.keys():
                 print(f"{key} - {self.available_coffees[key]['name']}\n", end="")
