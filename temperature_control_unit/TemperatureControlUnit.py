@@ -30,6 +30,7 @@ class TemperatureControlUnit:
         self.heater_loop_time = 0.05
         # Sensor properties
         self.sensor_polling_rate = 0.03
+        self.threads_timeout = 15
         # sensor polling having a higher rate than heat adding means it can/will overshoot
          
     def get_state(self):
@@ -57,29 +58,32 @@ class TemperatureControlUnit:
                 
         elif event == States_SCU.WAITING:
             self.set_state(States_TCU.OFF)   
-              
-    
+               
     def start_brewing(self):
         """Starts heating procedure setup
             sets and publishes States_TCU.READY flag
         """
+        
         if self.get_state() == States_TCU.HEATING:
+            
             # Start Double Thread
             heating_thread = threading.Thread(target=self.start_heating)
             sensor_thread = threading.Thread(target=self.reach_desired_temperature)
             
             sensor_thread.start()
             heating_thread.start()
-            
-            sensor_thread.join()
-            heating_thread.join()
-            
-            self.set_and_pub_self_signed_event(States_TCU.READY)
+
+            sensor_thread.join(self.threads_timeout)
+            heating_thread.join(self.threads_timeout)
+     
+            if heating_thread.is_alive():        
+                print("\n Thread Timeout, Stopped heating water somethings wrong")
+                self.set_state(States_TCU.OFF)
+            else:    
+                self.set_and_pub_self_signed_event(States_TCU.READY)
         else:
             print("ERROR: to start brewing tcu needs to be in HEATING STATE")
             
-        
-                
     def start_heating(self):
         # Simulate the heating process (Turned on the heater, waiting for signal from sensor to turn off)
         time.sleep(self.heater_loop_time)
@@ -118,7 +122,7 @@ if __name__ == "__main__":
     tcu = TemperatureControlUnit()
     tcu.state = "HEATING"
     start = time.time()
-    tcu.event_handler([States_SCU.VALID_REQUEST, 90])
+    tcu.event_handler([States_SCU.VALID_REQUEST, 9090])
   
     print(f"Took {time.time() - start:0.2f} s to heat\
  water from {tcu.temp_ambient} to {tcu.temp} at\

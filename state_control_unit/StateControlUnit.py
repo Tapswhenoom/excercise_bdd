@@ -41,6 +41,8 @@ class StateControlUnit():  # CoffeeMachine
     def event_handler(self, event):
         if event == States_TCU.READY:
             self.serve_coffee()
+        if event == States_SCU.OFF:
+            self.turn_off_machine()
 
     def turn_on_machine(self):
         """Turns Machine on
