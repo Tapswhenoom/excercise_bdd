@@ -1,8 +1,5 @@
-
-
-
 import unittest
-from temperature_control_unit.TemperatureControlUnit import TemperatureControlUnit  # Replace with the actual import statement for your TCU class
+from temperature_control_unit.TemperatureControlUnit import TemperatureControlUnit
 from states_enum.States import States_TCU
 import threading
 import time
@@ -36,11 +33,12 @@ class TestHardware(unittest.TestCase):
 
         with self.tcu.temp_lock:
             self.assertGreater(self.tcu.temp_desired, self.tcu.temp)
+            self.assertEqual(self.tcu.get_state(), States_TCU.HEATING)
             self.tcu.temp = 50
             self.assertLessEqual(self.tcu.temp_desired, self.tcu.temp)
-            
+         
         sensor_thread.join()
-
+        self.assertEqual(self.tcu.get_state(), States_TCU.READY)   
 
 if __name__ == '__main__':
     unittest.main()

@@ -22,7 +22,7 @@ You are working on an embedded system that controls a temperature control unit f
 
 **To implement an actual coffee maker I would start by separating the heating properties from the user interface / operations (coffee menu, serving coffee, turning on/off the machine), to accomplish this I would implement a state controller who would communicate with the temperature control unit through an event driven architecture. This way the temperature control unit is only responsible to deal with temperature by Heating the water, turning off, or signaling the water was at the desired temperature.** 
 **To simulate the sensor and heat resistance my aproach was to start two threads, a sensor thread that just keeps polling the temperature of the water and when it reaches the desired temperature sets the state as READY, and a heat resistance thread that keeps adding heat to the water till the sensor causes the state to change.**
-**Testing this implementation would require checking if the sensor gets triggered when the water has reached the correct temperature,**
+**Testing this implementation would require checking if the sensor gets triggered when the water has reached the correct temperature(start a sensor thread and ), and if the heat resistance has increased the water temperature,**
 + **PreDetermined code flow behaviour**
 + **Stop heating water if a timeout is reached**
 + ****
