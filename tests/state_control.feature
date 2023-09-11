@@ -1,30 +1,33 @@
-Feature: Logic Control Unit Behaviour
+Feature: State Control Unit Behaviour
 
     Scenario: Transition from OFF to WAITING
-      Given the tcu is OFF
-      When the coffee machine is turned on
-      Then tcu transitions to WAITING
+      Given the scu state is initially OFF
+      When the scu is turned on
+      Then scu transitions to WAITING
     
-    Scenario: Transition from WAITING to VALID_REQUEST
-      Given the tcu is WAITING
-      When the user selects a valid coffee brewing option
-      Then coffee machine transitions to VALID_REQUEST
-    
-    Scenario: Transition from VALID_REQUEST to HEATING
-      Given the tcu is VALID_REQUEST
-      Then coffee machine transitions to HEATING
-      
-    Scenario: Transition from READY to WAITING
-      Given the temperature control unit state is READY
-      When coffee is served
-      Then temperature control unit should transition to WAITING
+    Scenario Outline: Transition from WAITING to VALID_REQUEST or WAITING (if valid or invalid choice)
+      Given the scu state is initially WAITING
+      When the user selects a coffee brewing option, ex: <number>
+      Then scu transitions to <state>
+
+      Examples:
+      | number | state         |
+      | 1      | VALID_REQUEST |
+      | 2      | VALID_REQUEST |
+      | 3      | VALID_REQUEST |
+      | 4      | VALID_REQUEST |
+      | f      | WAITING |
+      | q      | OFF |
+      | 7      | WAITING |
 
     Scenario: Transition from WAITING to OFF
-      Given the logic control unit is WAITING
-      When the coffee machine is turned off
-      Then the temperature control unit should transition to OFF
+      Given the scu state is initially WAITING
+      When the scu is turned off
+      Then the scu should transition to OFF
 
-    Scenario: User doesnt choose an available option
-      Given the logic control unit is WAITING
-      When When the user selects a invalid coffee brewing option
-      Then coffee machine stays in WAITING 
+
+    Scenario: Transition from READY to WAITING
+      Given a valid coffee choice
+      And the scu receives a READY event
+      When coffee is served
+      Then scu transitions to WAITING

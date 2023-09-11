@@ -15,4 +15,4 @@ RUN pip install -r requirements.txt
 EXPOSE 80
 
 # Command to start your application (modify this based on your application)
-CMD ["python", "TemperatureControlUnit.py"]
+CMD ["python", "main.py"]

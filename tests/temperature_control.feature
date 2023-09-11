@@ -14,12 +14,12 @@ Feature: Temperature Control Unit Behavior
     Then the temperature control unit should transition to READY
 
   Scenario: Transition to OFF
-    Given the temperature control unit is READY
+    Given the temperature control unit is initially READY
     When the temperature control unit receives an event to turn OFF
     Then the temperature control unit should transition to OFF
   
-  Scenario: Transition to OFF waiting for request
-    Given the temperature control unit is READY
+  Scenario: Transition to OFF because waiting for request
+    Given the temperature control unit is initially READY
     When the temperature control unit receives an event to wait
     Then the temperature control unit should transition to OFF
 

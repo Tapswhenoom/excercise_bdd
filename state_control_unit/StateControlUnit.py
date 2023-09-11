@@ -58,12 +58,7 @@ class StateControlUnit():  # CoffeeMachine
         """
         print("Turning off TemperatureControlUnit and cancelling any operation\n")
         self.set_and_pub_self_signed_event(States_SCU.OFF)
-     
-    def shutdown_button_pressed(self):
-        """sends kill signal, runs on a daemon thread"""
-        # TODO: BUTTON PRESSED
-        self.turn_off_machine()  # logic will kill heating threads
-        
+      
     def select_coffee_brewing_option(self):
         """ Coffee menu, requests input from user with number associated with coffee
             if valid_request:
@@ -114,6 +109,3 @@ if __name__ == '__main__':
         coffee_machine.serve_coffee()
         
     print("finished")
-
-    
-    

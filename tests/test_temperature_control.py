@@ -1,7 +1,6 @@
 import pytest
-# from pytest_bdd import given, when, then, scenario
 import pytest_bdd
-from pytest_bdd import given, when, then
+from pytest_bdd import given, when, then, parsers
 from unittest import mock
 from functools import partial
 
@@ -14,14 +13,19 @@ from states_enum.States import States_TCU, States_SCU
 def temperature_unit():
     return TemperatureControlUnit()
 
+
 scenario = partial(pytest_bdd.scenario, "temperature_control.feature")
 
 
-# we could do something like the commented code below, but it makes it harder
+# we could do something like the code below, but it makes it harder
 # to get what the test is doing, but it does makes it simpler to write
-def common_given_initial_state(temperature_unit, initial_state):
-    if initial_state == "OFF":
+@given(parsers.parse("the temperature control unit is initially {initial_state}"))
+def initial_state(temperature_unit, initial_state):
+    state = eval("States_TCU."+initial_state)
+    if state == States_TCU.OFF:
         assert temperature_unit.get_state() == States_TCU.OFF
+    else: 
+        assert temperature_unit.set_state(state) == state
         
 
 # Define a pytest-bdd scenario
@@ -30,10 +34,10 @@ def test_initial_state_off():
     pass
 
         
-# Define steps for the scenario
-@given("the temperature control unit is initially OFF")
-def initial_state(temperature_unit):
-    assert temperature_unit.get_state() == States_TCU.OFF
+# # Define steps for the scenario
+# @given("the temperature control unit is initially OFF")
+# def initial_state(temperature_unit):
+#     assert temperature_unit.get_state() == States_TCU.OFF
 
 
 @scenario("Transition to HEATING")
@@ -81,9 +85,9 @@ def test_transition_to_off():
     return
 
 
-@given("the temperature control unit is READY")
-def initial_state(temperature_unit):
-    assert temperature_unit.set_state(States_TCU.READY) == States_TCU.READY
+# @given("the temperature control unit is initially READY")
+# def initial_state(temperature_unit):
+#     assert temperature_unit.set_state(States_TCU.READY) == States_TCU.READY
 
 
 @when("the temperature control unit receives an event to turn OFF")
@@ -116,7 +120,7 @@ def temp_reach(temperature_unit):
     assert temperature_unit.temp >= temperature_unit.temp_desired
 
 
-@scenario("Transition to OFF waiting for request")
+@scenario("Transition to OFF because waiting for request")
 def trans_off_waiting_request():
     pass
 
