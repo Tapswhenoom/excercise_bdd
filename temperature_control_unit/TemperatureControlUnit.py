@@ -30,7 +30,7 @@ class TemperatureControlUnit:
         self.heater_loop_time = 0.05
         # Sensor properties
         self.sensor_polling_rate = 0.03
-        self.threads_timeout = 15
+        self.threads_timeout = 10
         # sensor polling having a higher rate than heat adding means it can/will overshoot
          
     def get_state(self):

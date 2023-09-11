@@ -33,12 +33,6 @@ def initial_state(temperature_unit, initial_state):
 def test_initial_state_off():
     pass
 
-        
-# # Define steps for the scenario
-# @given("the temperature control unit is initially OFF")
-# def initial_state(temperature_unit):
-#     assert temperature_unit.get_state() == States_TCU.OFF
-
 
 @scenario("Transition to HEATING")
 def test_transition_to_heating():
@@ -85,11 +79,6 @@ def test_transition_to_off():
     return
 
 
-# @given("the temperature control unit is initially READY")
-# def initial_state(temperature_unit):
-#     assert temperature_unit.set_state(States_TCU.READY) == States_TCU.READY
-
-
 @when("the temperature control unit receives an event to turn OFF")
 def request_off(temperature_unit):
     temperature_unit.event_handler(States_SCU.OFF)
@@ -99,6 +88,19 @@ def request_off(temperature_unit):
 def transition_to_off(temperature_unit):
     assert temperature_unit.get_state() == States_TCU.OFF
 
+
+@scenario("Transition to OFF by threads timeout")
+def transition_threads_timeout():
+    pass
+
+
+@given("the temperature control unit receives an event with a high temperature request")
+def high_temp_request(temperature_unit):
+    temperature_unit.event_handler([States_SCU.VALID_REQUEST, 800])
+
+@then("the temperature control unit should transition to OFF")
+def thread_shutdown(temperature_unit):
+    assert temperature_unit.get_state() == States_TCU.OFF
 
 @scenario("Test water heating and sensor logic")
 def test_water_logic():

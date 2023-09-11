@@ -40,5 +40,6 @@ class TestHardware(unittest.TestCase):
         sensor_thread.join()
         self.assertEqual(self.tcu.get_state(), States_TCU.READY)   
 
+
 if __name__ == '__main__':
     unittest.main()
